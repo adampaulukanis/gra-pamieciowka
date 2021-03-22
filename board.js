@@ -12,6 +12,6 @@ export default class Board {
   set(x, y, value) {
     return (this.space[x + this.width * y] = value);
   }
-};
+}
 
 console.log('hello from board.js');

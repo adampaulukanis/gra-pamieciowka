@@ -3,11 +3,13 @@
 import Board from './board.js';
 import Cell from './cell.js';
 
-const board = new Board(5, 5);
+const board = new Board(10, 10);
 const canvas = document.querySelector('canvas');
-const w = Math.floor(canvas.width / board.width);
-const h = Math.floor(canvas.height / board.height);
+const w = Math.floor(canvas.offsetWidth / board.width);
+const h = Math.floor(canvas.offsetHeight / board.height);
 const ctx = canvas.getContext('2d');
+
+const output = document.querySelector('output');
 
 /* Initialize the board with random data */
 let randomArray = [1, 1, 4, 5, 3, 4, 2, 3, 2];
@@ -18,12 +20,12 @@ let colorArray = {
   3: 'yellow',
   4: 'pink',
   5: 'black',
-  6: 'white',
+  6: 'lime',
   7: 'purple',
   8: 'brown',
 };
 
-for (let y = 0; y < board.width; ++y) {
+for (let y = 0; y < board.height; ++y) {
   for (let x = 0; x < board.width; ++x) {
     let cell = new Cell(x, y);
     board.set(x, y, cell);
@@ -31,12 +33,20 @@ for (let y = 0; y < board.width; ++y) {
       return Math.floor(Math.random() * (max + 1));
     }
     cell.val = getRandomInt(8);
+    if (Math.random() > 0.9){
+      cell.jesiotr = false;
+    }
   }
 }
-for (let y = 0; y < board.width; ++y) {
-  for (let x = 0; x < board.width; ++x) {
-    ctx.fillStyle = colorArray[board.get(x, y).val];
-    ctx.fillRect(x * w, y * h, w, h);
+function drawBoard(board) {
+  for (let y = 0; y < board.height; ++y) {
+    for (let x = 0; x < board.width; ++x) {
+      let cell = board.get(x, y);
+      if (cell.canBeSeen) {
+        ctx.fillStyle = colorArray[cell.val];
+        ctx.fillRect(x * w, y * h, w, h);
+      }
+    }
   }
 }
 
@@ -44,9 +54,13 @@ canvas.addEventListener('contextmenu', (evt) => {
   evt.preventDefault();
 });
 
-canvas.addEventListener('mousemove', (evt) => {});
+canvas.addEventListener('mousemove', (evt) => {
+  let [x, y] = getCursorPosition(evt);
+  let val = board.get(x, y).val;
+  output.textContent = `${x} x ${y} = ${colorArray[val]}`;
+});
 
-let getCursorPosition = (e) => {
+function getCursorPosition(e) {
   let x, y;
   if (e.pageX != undefined && e.pageY != undefined) {
     x = e.pageX;
@@ -62,5 +76,7 @@ let getCursorPosition = (e) => {
   }
   x -= canvas.offsetLeft;
   y -= canvas.offsetTop;
-  return { x, y };
-};
+  return [Math.floor(x / w), Math.floor(y / h)];
+}
+
+drawBoard(board);

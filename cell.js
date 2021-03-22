@@ -5,6 +5,7 @@ export default class Cell {
     this.x = x;
     this.y = y;
     this.value;
+    this.wanttobeseen = true;
   }
   draw(ctx) {
     ctx.fillRect(this.x, this.y, canvas.width / 10, canvas.height / 10);
@@ -14,6 +15,12 @@ export default class Cell {
   }
   get val() {
     return this.value;
+  }
+  set jesiotr(what) {
+    this.wanttobeseen = what;
+  }
+  get canBeSeen() {
+    return this.wanttobeseen;
   }
 }
 

@@ -1,11 +1,13 @@
 'use strict';
 
+const timeouts = [];
+
 export default class Cell {
   constructor(x, y) {
     this.x = x;
     this.y = y;
     this.value;
-    this.wanttobeseen = true;
+    this.wanttobeseen = false;
   }
   draw(ctx) {
     ctx.fillRect(this.x, this.y, canvas.width / 10, canvas.height / 10);
@@ -21,6 +23,9 @@ export default class Cell {
   }
   get canBeSeen() {
     return this.wanttobeseen;
+  }
+  reset(){
+    this.wanttobeseen = false;
   }
 }
 

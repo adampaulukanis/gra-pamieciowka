@@ -3,10 +3,16 @@
 import Board from './board.js';
 import Cell from './cell.js';
 
-const board = new Board(10, 10);
+let counter = 0;
+
+const board = new Board(9, 9);
+window.board = board;
+
 const canvas = document.querySelector('canvas');
-const w = Math.floor(canvas.offsetWidth / board.width);
-const h = Math.floor(canvas.offsetHeight / board.height);
+let w = Math.floor(canvas.offsetWidth / board.width);
+let h = Math.floor(canvas.offsetHeight / board.height);
+w = Math.floor(canvas.width / board.width);
+h = Math.floor(canvas.height / board.height);
 const ctx = canvas.getContext('2d');
 
 const output = document.querySelector('output');
@@ -25,39 +31,41 @@ let colorArray = {
   8: 'brown',
 };
 
-for (let y = 0; y < board.height; ++y) {
-  for (let x = 0; x < board.width; ++x) {
-    let cell = new Cell(x, y);
-    board.set(x, y, cell);
-    function getRandomInt(max) {
-      return Math.floor(Math.random() * (max + 1));
-    }
-    cell.val = getRandomInt(8);
-    if (Math.random() > 0.9){
-      cell.jesiotr = false;
-    }
-  }
-}
-function drawBoard(board) {
+(function init() {
   for (let y = 0; y < board.height; ++y) {
     for (let x = 0; x < board.width; ++x) {
-      let cell = board.get(x, y);
-      if (cell.canBeSeen) {
-        ctx.fillStyle = colorArray[cell.val];
-        ctx.fillRect(x * w, y * h, w, h);
+      let cell = new Cell(x, y);
+      cell.randomNumber = Math.floor(Math.random() * 100);
+      board.set(x, y, cell);
+      function getRandomInt(max) {
+        return Math.floor(Math.random() * (max + 1));
       }
+      cell.val = colorArray[getRandomInt(8)];
     }
   }
+})();
+
+function helperformouse(evt) {
+  let x, y, val;
+  let cell;
+  [x, y] = getCursorPosition(evt);
+  cell = board.get(x, y) || {}; // sometimes I see errors flooding the console
+  val = cell.val;
+  if (Math.random() > 0.5) {
+    cell.jesiotr = 'i am lucky';
+  }
+  board.draw(ctx, w, h);
+  let message = `${x} x ${y} = ${val}`;
+  output.textContent = message;
 }
 
 canvas.addEventListener('contextmenu', (evt) => {
   evt.preventDefault();
+  output.textContent = counter++;
 });
 
 canvas.addEventListener('mousemove', (evt) => {
-  let [x, y] = getCursorPosition(evt);
-  let val = board.get(x, y).val;
-  output.textContent = `${x} x ${y} = ${colorArray[val]}`;
+  helperformouse(evt);
 });
 
 function getCursorPosition(e) {
@@ -79,4 +87,5 @@ function getCursorPosition(e) {
   return [Math.floor(x / w), Math.floor(y / h)];
 }
 
-drawBoard(board);
+//drawBoard(board);
+board.draw(ctx, w, h);

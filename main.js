@@ -40,7 +40,7 @@ let colorArray = {
       function getRandomInt(max) {
         return Math.floor(Math.random() * (max + 1));
       }
-      cell.val = colorArray[getRandomInt(8)];
+      cell.value = colorArray[getRandomInt(8)];
     }
   }
 })();
@@ -50,11 +50,15 @@ function helperformouse(evt) {
   let cell;
   [x, y] = getCursorPosition(evt);
   cell = board.get(x, y) || {}; // sometimes I see errors flooding the console
-  val = cell.val;
-  if (Math.random() > 0.5) {
-    cell.jesiotr = 'i am lucky';
-  }
-  board.draw(ctx, w, h);
+  // board.draw(ctx, w, h);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // draw something to show this cell is different
+  ctx.fillStyle = cell.value;
+  ctx.fillRect(x * w, y * h, w, h);
+
+  // Prepare message
+  val = cell.value;
   let message = `${x} x ${y} = ${val}`;
   output.textContent = message;
 }
@@ -87,5 +91,4 @@ function getCursorPosition(e) {
   return [Math.floor(x / w), Math.floor(y / h)];
 }
 
-//drawBoard(board);
-board.draw(ctx, w, h);
+//board.draw(ctx, w, h);

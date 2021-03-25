@@ -16,10 +16,8 @@ export default class Board {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
         let cell = this.get(x, y);
-        if (cell.canBeSeen) {
-          ctx.fillStyle = cell.val;
-          ctx.fillRect(x * w, y * h, w, h);
-        }
+        ctx.fillStyle = cell.value;
+        ctx.fillRect(x * w, y * h, w, h);
       }
     }
   }
